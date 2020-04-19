@@ -13,6 +13,7 @@ from torch.utils.data.dataset import Dataset
 from .registry import DATASETS
 
 
+
 @DATASETS.register_module
 class InShopDataset(Dataset):
     CLASSES = None
@@ -25,6 +26,7 @@ class InShopDataset(Dataset):
                  bbox_file,
                  landmark_file,
                  img_size,
+                 class_mapping,
                  roi_plane_size=7,
                  retrieve=False,
                  find_three=False):
@@ -79,9 +81,11 @@ class InShopDataset(Dataset):
             self.landmarks = None
 
         self.find_three = find_three
+        self.class_mapping = class_mapping
 
     def get_basic_item(self, idx):
         img = Image.open(os.path.join(self.img_path, self.img_list[idx]))
+        class_id = torch.tensor(self.class_mapping[self.img_list[idx].split("/")[2]])
         img_id = self.ids[idx]
         width, height = img.size
 
@@ -113,7 +117,7 @@ class InShopDataset(Dataset):
 
         landmark = torch.from_numpy(np.array(landmark)).float()
         img = self.transform(img)
-        data = {'img': img, 'landmark': landmark, 'id': img_id, 'attr': label}
+        data = {'img': img, 'landmark': landmark, 'id': img_id, 'attr': label, 'target': class_id}
         return data
 
     def get_three_items(self, idx):
