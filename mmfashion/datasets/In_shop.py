@@ -44,6 +44,9 @@ class InShopDataset(Dataset):
         # read img names
         fp = open(img_file, 'r')
         self.img_list = [x.strip() for x in fp]
+        self.class_ids = []
+        for img in self.img_list:
+            self.class_ids.append(self.class_mapping[img.split("/")[2]])
 
         # collect id
         self.ids = []
@@ -85,7 +88,7 @@ class InShopDataset(Dataset):
 
     def get_basic_item(self, idx):
         img = Image.open(os.path.join(self.img_path, self.img_list[idx]))
-        class_id = torch.tensor(self.class_mapping[self.img_list[idx].split("/")[2]])
+        class_id = torch.tensor(self.class_ids[idx])
         img_id = self.ids[idx]
         width, height = img.size
 
