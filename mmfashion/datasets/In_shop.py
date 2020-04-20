@@ -31,6 +31,7 @@ class InShopDataset(Dataset):
                  retrieve=False,
                  find_three=False):
         self.img_path = img_path
+        self.class_mapping = class_mapping
 
         normalize = transforms.Normalize(
             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -84,7 +85,6 @@ class InShopDataset(Dataset):
             self.landmarks = None
 
         self.find_three = find_three
-        self.class_mapping = class_mapping
 
     def get_basic_item(self, idx):
         img = Image.open(os.path.join(self.img_path, self.img_list[idx]))
