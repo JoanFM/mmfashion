@@ -87,13 +87,16 @@ class InShopDataset(Dataset):
         self.find_three = find_three
 
     def get_basic_item(self, idx):
+        print("Start get basic item")
         img = Image.open(os.path.join(self.img_path, self.img_list[idx]))
+        print(self.img_list[idx])
         class_id = torch.tensor(self.class_ids[idx])
         img_id = self.ids[idx]
         width, height = img.size
 
         if self.with_bbox:
             bbox_cor = self.bboxes[idx]
+            print(bbox_cor)
             x1 = max(0, int(bbox_cor[0]) - 20)
             y1 = max(0, int(bbox_cor[1]) - 20)
             x2 = int(bbox_cor[2]) + 20
@@ -121,6 +124,7 @@ class InShopDataset(Dataset):
         landmark = torch.from_numpy(np.array(landmark)).float()
         img = self.transform(img)
         data = {'img': img, 'landmark': landmark, 'id': img_id, 'attr': label, 'target': class_id}
+        print("End get basic item")
         return data
 
     def get_three_items(self, idx):
